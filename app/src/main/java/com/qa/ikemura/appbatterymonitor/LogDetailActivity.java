@@ -38,7 +38,9 @@ public class LogDetailActivity extends AppCompatActivity {
         });
 
         // Show the Up button in the action bar.
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
 
         // savedInstanceState is non-null when there is fragment state
         // saved from previous configurations of this activity
@@ -53,8 +55,8 @@ public class LogDetailActivity extends AppCompatActivity {
             // Create the detail fragment and add it to the activity
             // using a fragment transaction.
             Bundle arguments = new Bundle();
-            arguments.putString(LogDetailFragment.ARG_ITEM_ID,
-                    getIntent().getStringExtra(LogDetailFragment.ARG_ITEM_ID));
+            arguments.putSerializable(LogDetailFragment.ARG_ITEM_ID,
+                    getIntent().getSerializableExtra(LogDetailFragment.ARG_ITEM_ID));
             LogDetailFragment fragment = new LogDetailFragment();
             fragment.setArguments(arguments);
             getSupportFragmentManager().beginTransaction()

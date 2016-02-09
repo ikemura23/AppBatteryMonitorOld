@@ -9,6 +9,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 
+import com.qa.ikemura.appbatterymonitor.dummy.DummyContent;
+
 /**
  * An activity representing a list of logs. This activity has different
  * presentations for handset and tablet-size devices. On handsets, the activity
@@ -71,13 +73,13 @@ public class LogListActivity extends AppCompatActivity
      * the item with the given ID was selected.
      */
     @Override
-    public void onItemSelected(String id) {
+    public void onItemSelected(DummyContent.DummyItem item) {
         if (mTwoPane) {
             // In two-pane mode, show the detail view in this activity by
             // adding or replacing the detail fragment using a
             // fragment transaction.
             Bundle arguments = new Bundle();
-            arguments.putString(LogDetailFragment.ARG_ITEM_ID, id);
+            arguments.putSerializable(LogDetailFragment.ARG_ITEM_ID, item);
             LogDetailFragment fragment = new LogDetailFragment();
             fragment.setArguments(arguments);
             getSupportFragmentManager().beginTransaction()
@@ -88,7 +90,7 @@ public class LogListActivity extends AppCompatActivity
             // In single-pane mode, simply start the detail activity
             // for the selected item ID.
             Intent detailIntent = new Intent(this, LogDetailActivity.class);
-            detailIntent.putExtra(LogDetailFragment.ARG_ITEM_ID, id);
+            detailIntent.putExtra(LogDetailFragment.ARG_ITEM_ID, item);
             startActivity(detailIntent);
         }
     }

@@ -1,6 +1,7 @@
 
 package com.qa.ikemura.appbatterymonitor.dummy;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -54,7 +55,7 @@ public class DummyContent {
     /**
      * A dummy item representing a piece of content.
      */
-    public static class DummyItem {
+    public static class DummyItem implements Serializable {
         public String id;
         public String content;
         public String details;

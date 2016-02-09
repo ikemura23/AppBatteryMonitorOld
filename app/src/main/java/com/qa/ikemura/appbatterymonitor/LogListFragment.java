@@ -1,11 +1,15 @@
 
 package com.qa.ikemura.appbatterymonitor;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
 import java.io.FilenameFilter;
+import java.io.IOException;
 import java.util.ArrayList;
 
 import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
 import android.util.Log;
@@ -27,6 +31,7 @@ import com.qa.ikemura.appbatterymonitor.dummy.DummyContent;
  */
 public class LogListFragment extends ListFragment {
 
+    ArrayList<DummyContent.DummyItem> contents = new ArrayList<>();
     /**
      * The serialization (saved instance state) Bundle key representing the
      * activated item position. Only used on tablets.
@@ -53,7 +58,7 @@ public class LogListFragment extends ListFragment {
         /**
          * Callback for when an item has been selected.
          */
-        public void onItemSelected(String id);
+        public void onItemSelected(DummyContent.DummyItem item);
     }
 
     /**
@@ -62,7 +67,7 @@ public class LogListFragment extends ListFragment {
      */
     private static Callbacks sDummyCallbacks = new Callbacks() {
         @Override
-        public void onItemSelected(String id) {
+        public void onItemSelected(DummyContent.DummyItem item) {
         }
     };
 
@@ -76,7 +81,7 @@ public class LogListFragment extends ListFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        ArrayList<DummyContent.DummyItem> contents = new ArrayList<>();
+
         try {
             File path = getActivity().getApplicationContext().getFilesDir();
             Log.d("LogListFragment", path.getAbsolutePath());
@@ -107,7 +112,6 @@ public class LogListFragment extends ListFragment {
             Toast.makeText(getActivity().getApplicationContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
         }
 
-        // TODO: replace with a real list adapter.
         setListAdapter(new ArrayAdapter<DummyContent.DummyItem>(
                 getActivity(),
                 android.R.layout.simple_list_item_activated_1,
@@ -116,7 +120,25 @@ public class LogListFragment extends ListFragment {
     }
 
     private String getDetail(String file) {
-        return null;
+        return readFileAsString(file);
+    }
+
+    private String readFileAsString(String fileName) {
+        Context context = getActivity().getApplicationContext();
+        StringBuilder stringBuilder = new StringBuilder();
+        String line;
+        BufferedReader in = null;
+
+        try {
+            in = new BufferedReader(new FileReader(new File(context.getFilesDir(), fileName)));
+            while ((line = in.readLine()) != null)
+                stringBuilder.append(line);
+
+        } catch (IOException e) {
+            Log.e("LogListFragment", e.getMessage());
+        }
+
+        return stringBuilder.toString();
     }
 
     @Override
@@ -156,7 +178,7 @@ public class LogListFragment extends ListFragment {
 
         // Notify the active callbacks interface (the activity, if the
         // fragment is attached to one) that an item has been selected.
-        mCallbacks.onItemSelected(DummyContent.ITEMS.get(position).id);
+        mCallbacks.onItemSelected(contents.get(position));
     }
 
     @Override
