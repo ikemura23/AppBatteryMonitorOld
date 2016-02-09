@@ -2,7 +2,9 @@ package com.qa.ikemura.appbatterymonitor;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -10,12 +12,14 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.BatteryManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -28,6 +32,8 @@ public class LauncherActivity extends AppCompatActivity {
     private Timer mTimer = null;
     private int scale;
     private int level;
+    private String fileName = null;
+
     // 受信機
     public BroadcastReceiver myReceiver = new BroadcastReceiver() {
 
@@ -78,14 +84,19 @@ public class LauncherActivity extends AppCompatActivity {
                 startLogListActivity();
             }
         });
-
-        setTimer();
     }
 
-    private void setTimer() {
+    private String getBatteryLevel() {
         IntentFilter filter = new IntentFilter();
         filter.addAction(Intent.ACTION_BATTERY_CHANGED);
-        registerReceiver(myReceiver, filter);
+        Intent batteryStatus = registerReceiver(myReceiver, filter);
+        if (batteryStatus == null) {
+            return "failed";
+        }
+        int level = batteryStatus.getIntExtra(BatteryManager.EXTRA_LEVEL, -1);
+        String batteryInfo = "Level: " + String.valueOf(level) + "%";
+        Log.d("LauncherActivity", batteryInfo);
+        return String.valueOf(level);
     }
 
     /**
@@ -96,7 +107,7 @@ public class LauncherActivity extends AppCompatActivity {
         int resource;
         if (isRecord) {
             resource = android.R.drawable.ic_media_pause;
-            // startMonitor();
+            startMonitor();
         } else {
             resource = android.R.drawable.ic_media_play;
         }
@@ -118,14 +129,14 @@ public class LauncherActivity extends AppCompatActivity {
                 mHandler.post(new Runnable() {
                     public void run() {
                         // ここに処理を書く
-
-                        String FILENAME = new Date().toString();
-                        String string = getBatteryString();
+                        String FILENAME = getFileName();
+                        String batteryLevel = getBatteryLevel();
+                        String value = batteryLevel + "\n";
 
                         FileOutputStream fos = null;
                         try {
-                            fos = openFileOutput(FILENAME, Context.MODE_PRIVATE);
-                            fos.write(string.getBytes());
+                            fos = openFileOutput(FILENAME, Context.MODE_APPEND);
+                            fos.write(value.getBytes());
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
@@ -142,9 +153,18 @@ public class LauncherActivity extends AppCompatActivity {
         }, 0, 2000); // 1秒後から2秒間隔で実行
     }
 
-    private String getBatteryString() {
-
-        return null;
+    /**
+     * ファイル名取得
+     * 
+     * @return
+     */
+    private String getFileName() {
+        if (fileName != null) {
+            return fileName;
+        }
+        Date now = new Date();
+        SimpleDateFormat f = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss", Locale.getDefault());
+        return f.format(now);
     }
 
     private void startSettingActivity() {
