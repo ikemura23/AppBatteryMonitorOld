@@ -17,6 +17,8 @@
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
         >
 
+        <!--expandedTitleTextAppearance-->
+        <!--http://stackoverflow.com/questions/31738831/how-to-change-collapsingtoolbarlayout-typeface-and-size-->
         <android.support.design.widget.CollapsingToolbarLayout
             android:id="@+id/toolbar_layout"
             android:layout_width="match_parent"
@@ -54,6 +56,7 @@
         android:layout_gravity="center_vertical|start"
         android:layout_margin="@dimen/fab_margin"
         android:src="@android:drawable/ic_menu_share"
+        app:fabSize="mini"
         app:layout_anchor="@+id/log_detail_container"
         app:layout_anchorGravity="top|end"
         />

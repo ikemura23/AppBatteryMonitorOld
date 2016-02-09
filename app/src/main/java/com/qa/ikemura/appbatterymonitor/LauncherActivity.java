@@ -1,7 +1,8 @@
 package com.qa.ikemura.appbatterymonitor;
 
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
@@ -14,6 +15,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.BatteryManager;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -33,6 +35,8 @@ public class LauncherActivity extends AppCompatActivity {
     private int scale;
     private int level;
     private String fileName = null;
+    static final String mFilePath = Environment.getExternalStorageDirectory().getAbsolutePath()
+            + File.separator;
 
     // 受信機
     public BroadcastReceiver myReceiver = new BroadcastReceiver() {
@@ -101,9 +105,9 @@ public class LauncherActivity extends AppCompatActivity {
             return "failed";
         }
         int level = batteryStatus.getIntExtra(BatteryManager.EXTRA_LEVEL, -1);
-        String batteryInfo = "Level: " + String.valueOf(level) + "%";
+        String batteryInfo = "  L: " + String.valueOf(level);
         Log.d("LauncherActivity", batteryInfo);
-        return String.valueOf(level);
+        return batteryInfo;
     }
 
     /**
@@ -124,7 +128,28 @@ public class LauncherActivity extends AppCompatActivity {
      * 記録開始
      */
     private void startMonitor() {
-        Log.d("LauncherActivity", "start monitor");
+        Log.d("LauncherActivity", "start put log for battery");
+
+        // マウント状態を確認
+        // if (isNotMountSDCard)) {
+        // Toast.makeText(this, "外部ストレージはマウントされてません",
+        // Toast.LENGTH_SHORT).show();
+        // Log.d("StorageOutActivity", "外部ストレージはマウントされてません");
+        // return;
+        // }
+        // // 外部ストレージの有無を確認
+        // if (isNotExists()) {
+        // Toast.makeText(this, "外部ストレージは存在しません", Toast.LENGTH_SHORT).show();
+        // Log.d("StorageOutActivity", "外部ストレージは存在しません");
+        // return;
+        // }
+        // // 外部ストレージの状態を確認
+        // if (isNotWrite()) {
+        // Toast.makeText(this, "外部ストレージは書き込みできません", Toast.LENGTH_SHORT).show();
+        // Log.d("StorageOutActivity", "外部ストレージは書き込みできません");
+        // return;
+        // }
+
         // タイマー処理
         mTimer = new Timer(true);
         mTimer.schedule(new TimerTask() {
@@ -133,23 +158,60 @@ public class LauncherActivity extends AppCompatActivity {
                 mHandler.post(new Runnable() {
                     public void run() {
                         // ここに処理を書く
-                        String FILENAME = getFileName();
+                        String FILENAME = mFilePath + getFileName();
+
+                        String strRecordTime = getRecordTime();
                         String batteryLevel = getBatteryLevel();
-                        String value = batteryLevel + "\n";
+                        String value = strRecordTime + batteryLevel;
 
-                        FileOutputStream fos = null;
-                        try {
-                            fos = openFileOutput(FILENAME, Context.MODE_APPEND);
-                            fos.write(value.getBytes());
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
+                        // String filePath =
+                        // Environment.getExternalStorageDirectory().getPath() +
+                        // "/" + FILENAME;
+                        // File file = new File(filePath);
+                        // file.getParentFile().mkdir();
+
+                        // FileOutputStream fos = null;
+                        // try {
+                        //
+                        //
+                        //
+                        // fos = openFileOutput(FILENAME, Context.MODE_APPEND);
+                        // // BufferedWriter buf = new BufferedWriter(new
+                        // // OutputStreamWriter(fos));
+                        // // buf.write(value);
+                        // // buf.newLine();
+                        // // // fos.write(value.getBytes());
+                        // // buf.close();
+                        //
+                        // fos = new FileOutputStream(file, true);
+                        // BufferedWriter buf = new BufferedWriter(new
+                        // OutputStreamWriter(fos));
+                        // // fileOutputStream.write(value.getBytes());
+                        // // fileOutputStream.close();
+                        // buf.write(value);
+                        // buf.newLine();
+                        // buf.close();
+                        // } catch (IOException e) {
+                        // e.printStackTrace();
+                        // Toast.makeText(LauncherActivity.this, e.getMessage(),
+                        // Toast.LENGTH_SHORT).show();
+                        // }
+
+                        // try {
+                        // assert fos != null;
+                        // fos.close();
+                        // } catch (IOException e) {
+                        // e.printStackTrace();
+                        // }
 
                         try {
-                            assert fos != null;
-                            fos.close();
-                        } catch (IOException e) {
-                            e.printStackTrace();
+
+                            BufferedWriter bw = new BufferedWriter(new FileWriter(FILENAME, true));
+                            bw.write(value);
+                            bw.newLine();
+                            bw.close();
+                        } catch (Exception e) {
+                            Log.e("LauncherActivity", e.getMessage(), e);
                         }
                     }
                 });
@@ -157,6 +219,37 @@ public class LauncherActivity extends AppCompatActivity {
         }, 0, 2000); // 0秒後から2秒間隔で実行
     }
 
+    private String getRecordTime() {
+        SimpleDateFormat sdf = new SimpleDateFormat("[yyyy-MM-dd HH:mm:ss.SSS] ", Locale.JAPAN);
+        return sdf.format(new Date());
+    }
+
+    /**
+     * SdCardのマウント状態をチェック
+     *
+     * @return true:マウントされてる、false:マウントされてない
+     */
+    private boolean isNotMountSDCard() {
+        return !Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED);
+    }
+
+    /**
+     * 外部ストレージ存在チェック
+     *
+     * @return true:存在する, false:存在しない
+     */
+    private boolean isNotExists() {
+        return !Environment.getExternalStorageDirectory().exists();
+    }
+
+    /**
+     * 外部ストレージに書き込み可能か？
+     *
+     * @return true:可能, false:不可能
+     */
+    private boolean isNotWrite() {
+        return !Environment.getExternalStorageDirectory().canWrite();
+    }
     /**
      * ファイル名取得
      * 
@@ -168,7 +261,8 @@ public class LauncherActivity extends AppCompatActivity {
         }
         Date now = new Date();
         SimpleDateFormat f = new SimpleDateFormat("yyyyMMdd HH:mm:ss", Locale.getDefault());
-        return f.format(now) + ".log";
+        fileName = f.format(now) + ".log";
+        return fileName;
     }
 
     /**
@@ -178,7 +272,7 @@ public class LauncherActivity extends AppCompatActivity {
         if (mTimer == null) {
             return;
         }
-        Log.d("LauncherActivity", "stop monitor");
+        Log.d("LauncherActivity", "stop put log");
         mTimer.cancel();
         fileName = null;
     }
