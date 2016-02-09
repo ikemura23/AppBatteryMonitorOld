@@ -18,6 +18,22 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".SettingsActivity"
+            android:label="@string/action_settings" />
+        <activity
+            android:name=".LogListActivity"
+            android:label="@string/title_log_list"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".LogDetailActivity"
+            android:label="@string/title_log_detail"
+            android:parentActivityName=".LogListActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".LogListActivity" />
+        </activity>
     </application>
 
 </manifest>
