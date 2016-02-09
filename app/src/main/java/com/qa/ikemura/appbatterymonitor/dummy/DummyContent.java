@@ -65,6 +65,10 @@ public class DummyContent {
             this.details = details;
         }
 
+        public DummyItem() {
+
+        }
+
         @Override
         public String toString() {
             return content;

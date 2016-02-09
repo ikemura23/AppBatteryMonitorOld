@@ -64,8 +64,6 @@ public class LogListActivity extends AppCompatActivity
                     .findFragmentById(R.id.log_list))
                     .setActivateOnItemClick(true);
         }
-
-        // TODO: If exposing deep links into your app, handle intents here.
     }
 
     /**

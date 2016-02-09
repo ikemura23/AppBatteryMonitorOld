@@ -1,12 +1,18 @@
 
 package com.qa.ikemura.appbatterymonitor;
 
+import java.io.File;
+import java.io.FilenameFilter;
+import java.util.ArrayList;
+
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
+import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.qa.ikemura.appbatterymonitor.dummy.DummyContent;
 
@@ -70,13 +76,47 @@ public class LogListFragment extends ListFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        ArrayList<DummyContent.DummyItem> contents = new ArrayList<>();
+        try {
+            File path = getActivity().getApplicationContext().getFilesDir();
+            Log.d("LogListFragment", path.getAbsolutePath());
+            Log.d("LogListFragment", path.getAbsolutePath());
+            String fileList[] = path.list(new FilenameFilter() {
+                @Override
+                public boolean accept(File dir, String filename) {
+                    if (filename.contains(".log")) {
+                        return true;
+                    }
+                    return false;
+                }
+            });
+
+            int no = 1;
+            for (String file : fileList) {
+                DummyContent.DummyItem item = new DummyContent.DummyItem();
+                item.id = String.valueOf(no);
+                item.content = file;
+                item.details = getDetail(file);
+                Log.d("LogListFragment", item.id + " " + item.content);
+                no++;
+
+                contents.add(item);
+            }
+
+        } catch (Exception e) {
+            Toast.makeText(getActivity().getApplicationContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
+        }
 
         // TODO: replace with a real list adapter.
         setListAdapter(new ArrayAdapter<DummyContent.DummyItem>(
                 getActivity(),
                 android.R.layout.simple_list_item_activated_1,
                 android.R.id.text1,
-                DummyContent.ITEMS));
+                contents));
+    }
+
+    private String getDetail(String file) {
+        return null;
     }
 
     @Override
