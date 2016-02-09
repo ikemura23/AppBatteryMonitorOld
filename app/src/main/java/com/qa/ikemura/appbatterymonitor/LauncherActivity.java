@@ -45,12 +45,6 @@ public class LauncherActivity extends AppCompatActivity {
                 // 電池残量
                 level = intent.getIntExtra("level", 0);
             }
-
-            // 結果を描写
-            // TextView textView = new TextView(context);
-            // textView.setText(""+level+"/"+scale);
-            // textView.setTextSize(64);
-            // setContentView(textView);
         }
     };
 
@@ -67,6 +61,14 @@ public class LauncherActivity extends AppCompatActivity {
             public void onClick(View view) {
                 isRecord = !isRecord;
                 setFabSrc();
+
+                if (isRecord) {
+                    startMonitor();
+                }
+                else {
+                    stopMonitor();
+                }
+
                 Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
             }
@@ -86,6 +88,11 @@ public class LauncherActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * 残バッテリー取得
+     * 
+     * @return 残バッテリー文字
+     */
     private String getBatteryLevel() {
         IntentFilter filter = new IntentFilter();
         filter.addAction(Intent.ACTION_BATTERY_CHANGED);
@@ -107,20 +114,17 @@ public class LauncherActivity extends AppCompatActivity {
         int resource;
         if (isRecord) {
             resource = android.R.drawable.ic_media_pause;
-            startMonitor();
         } else {
             resource = android.R.drawable.ic_media_play;
         }
         fab.setImageResource(resource);
-        // if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-        // fab.setImageDrawable(getDrawable(resource));
-        // }
-        // else {
-        // fab.setImageResource(resource);
-        // }
     }
 
+    /**
+     * 記録開始
+     */
     private void startMonitor() {
+        Log.d("LauncherActivity", "start monitor");
         // タイマー処理
         mTimer = new Timer(true);
         mTimer.schedule(new TimerTask() {
@@ -150,7 +154,7 @@ public class LauncherActivity extends AppCompatActivity {
                     }
                 });
             }
-        }, 0, 2000); // 1秒後から2秒間隔で実行
+        }, 0, 2000); // 0秒後から2秒間隔で実行
     }
 
     /**
@@ -163,10 +167,23 @@ public class LauncherActivity extends AppCompatActivity {
             return fileName;
         }
         Date now = new Date();
-        SimpleDateFormat f = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss", Locale.getDefault());
-        return f.format(now);
+        SimpleDateFormat f = new SimpleDateFormat("yyyyMMdd HH:mm:ss", Locale.getDefault());
+        return f.format(now) + ".log";
     }
 
+    /**
+     * 記録ストップ
+     */
+    private void stopMonitor() {
+        if (mTimer == null) {
+            return;
+        }
+        Log.d("LauncherActivity", "stop monitor");
+        mTimer.cancel();
+        fileName = null;
+    }
+
+    // start activity ---------------------------------------------------------
     private void startSettingActivity() {
         Intent intent = new Intent(this, SettingsActivity.class);
         startActivity(intent);
@@ -177,6 +194,7 @@ public class LauncherActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
+    // OptionsMenu --------------------------------------------------------
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
