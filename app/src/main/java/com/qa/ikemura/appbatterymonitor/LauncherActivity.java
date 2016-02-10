@@ -106,7 +106,14 @@ public class LauncherActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        unregisterReceiver(myReceiver);
+        try {
+            if (myReceiver != null) {
+                unregisterReceiver(myReceiver);
+                myReceiver = null;
+            }
+        } catch (Exception e) {
+            Log.d("LauncherActivity", e.getMessage());
+        }
     }
 
     private void setEnableOrDisableForButton() {
