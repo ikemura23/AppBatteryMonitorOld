@@ -7,6 +7,7 @@ import java.io.FileReader;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -95,15 +96,15 @@ public class LogListFragment extends ListFragment {
                 }
             });
 
-            int no = 1;
-            for (String fileName : fileNameList) {
+            Arrays.sort(fileNameList);
+
+            int no = fileNameList.length;
+            for (int i = fileNameList.length - 1; i >= 0; i--) {
                 DummyContent.DummyItem item = new DummyContent.DummyItem();
                 item.id = String.valueOf(no);
-                item.fileName = fileName;
-                item.details = readFileAsString(fileName);
+                item.fileName = fileNameList[i];
+                item.details = readFileAsString(fileNameList[i]);
                 Log.d("LogListFragment", item.id + " " + item.fileName);
-                no++;
-
                 contents.add(item);
             }
 
