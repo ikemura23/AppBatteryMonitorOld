@@ -30,12 +30,11 @@
     <!--android:positiveButtonText="@null"-->
     <!--android:title="@string/pref_title_add_friends_to_messages" />-->
     <EditTextPreference
-        android:capitalize="words"
         android:defaultValue="15"
         android:inputType="number"
-        android:key="output_interval"
+        android:key="delay"
         android:maxLines="1"
         android:selectAllOnFocus="true"
         android:singleLine="true"
-        android:title="output interval (minutes)"/>
+        android:title="delay (minutes)"/>
 </PreferenceScreen>

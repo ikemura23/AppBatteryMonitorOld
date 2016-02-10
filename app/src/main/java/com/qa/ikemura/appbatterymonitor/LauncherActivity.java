@@ -17,13 +17,13 @@ import android.os.BatteryManager;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
@@ -70,6 +70,7 @@ public class LauncherActivity extends AppCompatActivity {
                 isRecord = !isRecord;
                 changeFabSrc();
                 setVisibleStatusText();
+                setEnableOrDisableForButton();
 
                 if (isRecord) {
                     startMonitor();
@@ -93,6 +94,23 @@ public class LauncherActivity extends AppCompatActivity {
                 startLogListActivity();
             }
         });
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unregisterReceiver(myReceiver);
+    }
+
+    private void setEnableOrDisableForButton() {
+        if (isRecord) {
+            findViewById(R.id.activity_main_setting_button).setEnabled(false);
+            findViewById(R.id.activity_main_log_button).setEnabled(false);
+        }
+        else {
+            findViewById(R.id.activity_main_setting_button).setEnabled(true);
+            findViewById(R.id.activity_main_log_button).setEnabled(true);
+        }
     }
 
     private void setVisibleStatusText() {
@@ -121,9 +139,7 @@ public class LauncherActivity extends AppCompatActivity {
             return "failed";
         }
         int level = batteryStatus.getIntExtra(BatteryManager.EXTRA_LEVEL, -1);
-        String batteryInfo = "  L: " + String.valueOf(level);
-        Log.d("LauncherActivity", batteryInfo);
-        return batteryInfo;
+        return "  L: " + String.valueOf(level);
     }
 
     /**
@@ -161,6 +177,13 @@ public class LauncherActivity extends AppCompatActivity {
             Toast.makeText(this, "外部ストレージは書き込みできません", Toast.LENGTH_SHORT).show();
             return;
         }
+        String delayString = getDelay();
+        int delay = 15;
+        try {
+            delay = Integer.valueOf(delayString);
+        } catch (Exception e) {
+            Log.d("LauncherActivity", e.getMessage());
+        }
 
         // タイマー処理
         mTimer = new Timer(true);
@@ -171,53 +194,13 @@ public class LauncherActivity extends AppCompatActivity {
                     public void run() {
                         // ここに処理を書く
                         String FILENAME = mFilePath + getFileName();
-
                         String strRecordTime = getRecordTime();
                         String batteryLevel = getBatteryLevel();
                         String value = strRecordTime + batteryLevel;
 
-                        // String filePath =
-                        // Environment.getExternalStorageDirectory().getPath() +
-                        // "/" + FILENAME;
-                        // File file = new File(filePath);
-                        // file.getParentFile().mkdir();
-
-                        // FileOutputStream fos = null;
-                        // try {
-                        //
-                        //
-                        //
-                        // fos = openFileOutput(FILENAME, Context.MODE_APPEND);
-                        // // BufferedWriter buf = new BufferedWriter(new
-                        // // OutputStreamWriter(fos));
-                        // // buf.write(value);
-                        // // buf.newLine();
-                        // // // fos.write(value.getBytes());
-                        // // buf.close();
-                        //
-                        // fos = new FileOutputStream(file, true);
-                        // BufferedWriter buf = new BufferedWriter(new
-                        // OutputStreamWriter(fos));
-                        // // fileOutputStream.write(value.getBytes());
-                        // // fileOutputStream.close();
-                        // buf.write(value);
-                        // buf.newLine();
-                        // buf.close();
-                        // } catch (IOException e) {
-                        // e.printStackTrace();
-                        // Toast.makeText(LauncherActivity.this, e.getMessage(),
-                        // Toast.LENGTH_SHORT).show();
-                        // }
-
-                        // try {
-                        // assert fos != null;
-                        // fos.close();
-                        // } catch (IOException e) {
-                        // e.printStackTrace();
-                        // }
-
+                        Log.d("LauncherActivity", FILENAME);
+                        Log.d("LauncherActivity", value);
                         try {
-
                             BufferedWriter bw = new BufferedWriter(new FileWriter(FILENAME, true));
                             bw.write(value);
                             bw.newLine();
@@ -228,7 +211,13 @@ public class LauncherActivity extends AppCompatActivity {
                     }
                 });
             }
-        }, 0, 2000); // 0秒後から2秒間隔で実行
+        }, 0, 1000 * 60 * delay); // 0秒後から設定>delayで設定した間隔で実行
+    }
+
+    private String getDelay() {
+        return PreferenceManager
+                .getDefaultSharedPreferences(getApplicationContext())
+                .getString("delay", "15");
     }
 
     private String getRecordTime() {
@@ -305,20 +294,5 @@ public class LauncherActivity extends AppCompatActivity {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_launcher, menu);
         return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
     }
 }
