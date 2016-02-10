@@ -69,6 +69,7 @@ public class LauncherActivity extends AppCompatActivity {
                         .setAction("Action", null).show();
                 isRecord = !isRecord;
                 changeFabSrc();
+                setVisibleStatusText();
 
                 if (isRecord) {
                     startMonitor();
@@ -92,6 +93,15 @@ public class LauncherActivity extends AppCompatActivity {
                 startLogListActivity();
             }
         });
+    }
+
+    private void setVisibleStatusText() {
+        if (isRecord) {
+            findViewById(R.id.activity_main_log_status_text).setVisibility(View.VISIBLE);
+        }
+        else {
+            findViewById(R.id.activity_main_log_status_text).setVisibility(View.GONE);
+        }
     }
 
     private int getMessageId() {

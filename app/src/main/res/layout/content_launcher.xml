@@ -25,4 +25,15 @@
         android:text="ログを見る"
         />
 
+    <TextView
+        android:id="@+id/activity_main_log_status_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="30dp"
+        android:visibility="gone"
+        android:text="@string/monitor_start_message"
+        android:textColor="#FF0000"
+        android:textSize="30dp"
+        />
 </LinearLayout>
