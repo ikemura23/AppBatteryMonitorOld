@@ -1,14 +1,22 @@
 
 package com.qa.ikemura.appbatterymonitor;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+
 import android.app.Activity;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.qa.ikemura.appbatterymonitor.dummy.DummyContent;
 
@@ -23,7 +31,7 @@ public class LogDetailFragment extends Fragment {
      * represents.
      */
     public static final String ARG_ITEM_ID = "item_id";
-
+    final File file = Environment.getExternalStorageDirectory();
 
     private DummyContent.DummyItem mItem;
 
@@ -58,9 +66,27 @@ public class LogDetailFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_log_detail, container, false);
 
         if (mItem != null) {
-            ((TextView) rootView.findViewById(R.id.log_detail)).setText(mItem.details);
+            ((TextView) rootView.findViewById(R.id.log_detail)).setText(readFileAsString());
         }
 
         return rootView;
+    }
+
+    private String readFileAsString() {
+        StringBuilder stringBuilder = new StringBuilder();
+        String line;
+        BufferedReader in = null;
+
+        try {
+            in = new BufferedReader(new FileReader(new File(file, mItem.fileName)));
+            while ((line = in.readLine()) != null)
+                stringBuilder.append(line).append("\n");
+
+        } catch (IOException e) {
+            Toast.makeText(getActivity().getApplicationContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
+            Log.e("LogListFragment", "readFileAsString:" + e.getMessage());
+        }
+
+        return stringBuilder.toString();
     }
 }

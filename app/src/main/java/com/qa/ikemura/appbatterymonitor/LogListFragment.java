@@ -100,7 +100,7 @@ public class LogListFragment extends ListFragment {
                 DummyContent.DummyItem item = new DummyContent.DummyItem();
                 item.id = String.valueOf(no);
                 item.fileName = fileName;
-                item.details = getDetail(fileName);
+                item.details = readFileAsString(fileName);
                 Log.d("LogListFragment", item.id + " " + item.fileName);
                 no++;
 
@@ -117,10 +117,6 @@ public class LogListFragment extends ListFragment {
                 android.R.layout.simple_list_item_activated_1,
                 android.R.id.text1,
                 contents));
-    }
-
-    private String getDetail(String file) {
-        return readFileAsString(file);
     }
 
     private String readFileAsString(String fileName) {
