@@ -1,19 +1,2 @@
 <?xml version="1.0" encoding="utf-8"?>
-<items version="2" >
-
-    <item
-        jar="/home/administrator/.gradle/caches/modules-2/files-2.1/com.squareup.okio/okio/1.6.0/98476622f10715998eacf9240d6b479f12c66143/okio-1.6.0.jar"
-        jumboMode="false"
-        revision="23.0.2"
-        sha1="98476622f10715998eacf9240d6b479f12c66143">
-        <dex dex="/home/administrator/AndroidStudioProjects/AppBatteryMonitor/app/build/intermediates/pre-dexed/debug/okio-1.6.0-33c6c9a02588f8be19d29a27b21d374698edfe26.jar" />
-    </item>
-    <item
-        jar="/home/administrator/.gradle/caches/modules-2/files-2.1/com.squareup.moshi/moshi/1.1.0/9c665b797ef9427f6d73572642dcb5f90270f7d3/moshi-1.1.0.jar"
-        jumboMode="false"
-        revision="23.0.2"
-        sha1="9c665b797ef9427f6d73572642dcb5f90270f7d3">
-        <dex dex="/home/administrator/AndroidStudioProjects/AppBatteryMonitor/app/build/intermediates/pre-dexed/debug/moshi-1.1.0-f13285a8bcc817b5940e4b2ca5f34cffb926af8f.jar" />
-    </item>
-
-</items>
+<items version="2" />

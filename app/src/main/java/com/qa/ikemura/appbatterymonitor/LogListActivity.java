@@ -1,14 +1,10 @@
 
 package com.qa.ikemura.appbatterymonitor;
 
-import java.io.File;
-
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Environment;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
-import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
@@ -92,7 +88,7 @@ public class LogListActivity extends AppCompatActivity
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == android.R.id.home) {
-            NavUtils.navigateUpTo(this, new Intent(this, LogListActivity.class));
+            finish();
             return true;
         }
         return super.onOptionsItemSelected(item);
