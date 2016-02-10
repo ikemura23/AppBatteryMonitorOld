@@ -99,7 +99,8 @@ public class LauncherActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        ((TextView) findViewById(R.id.activity_main_interval_text)).append(getInterval());
+        String text = "Interval:" + getInterval();
+        ((TextView) findViewById(R.id.activity_main_interval_text)).setText(text);
     }
 
     @Override
