@@ -25,6 +25,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
 public class LauncherActivity extends AppCompatActivity {
 
@@ -63,8 +64,11 @@ public class LauncherActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Log.d("LauncherActivity", getString(getMessageId()));
+                Snackbar.make(view, getMessageId(), Snackbar.LENGTH_LONG)
+                        .setAction("Action", null).show();
                 isRecord = !isRecord;
-                setFabSrc();
+                changeFabSrc();
 
                 if (isRecord) {
                     startMonitor();
@@ -73,8 +77,6 @@ public class LauncherActivity extends AppCompatActivity {
                     stopMonitor();
                 }
 
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
             }
         });
         findViewById(R.id.activity_main_setting_button).setOnClickListener(new View.OnClickListener() {
@@ -90,6 +92,10 @@ public class LauncherActivity extends AppCompatActivity {
                 startLogListActivity();
             }
         });
+    }
+
+    private int getMessageId() {
+        return isRecord ? R.string.monitor_end_message : R.string.monitor_start_message;
     }
 
     /**
@@ -113,7 +119,7 @@ public class LauncherActivity extends AppCompatActivity {
     /**
      * change FAB src
      */
-    private void setFabSrc() {
+    private void changeFabSrc() {
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         int resource;
         if (isRecord) {
@@ -128,27 +134,23 @@ public class LauncherActivity extends AppCompatActivity {
      * 記録開始
      */
     private void startMonitor() {
-        Log.d("LauncherActivity", "start put log for battery");
 
         // マウント状態を確認
-        // if (isNotMountSDCard)) {
-        // Toast.makeText(this, "外部ストレージはマウントされてません",
-        // Toast.LENGTH_SHORT).show();
-        // Log.d("StorageOutActivity", "外部ストレージはマウントされてません");
-        // return;
-        // }
-        // // 外部ストレージの有無を確認
-        // if (isNotExists()) {
-        // Toast.makeText(this, "外部ストレージは存在しません", Toast.LENGTH_SHORT).show();
-        // Log.d("StorageOutActivity", "外部ストレージは存在しません");
-        // return;
-        // }
-        // // 外部ストレージの状態を確認
-        // if (isNotWrite()) {
-        // Toast.makeText(this, "外部ストレージは書き込みできません", Toast.LENGTH_SHORT).show();
-        // Log.d("StorageOutActivity", "外部ストレージは書き込みできません");
-        // return;
-        // }
+        if (isNotMountSDCard()) {
+            Toast.makeText(this, "外部ストレージはマウントされてません",
+                    Toast.LENGTH_SHORT).show();
+            return;
+        }
+        // 外部ストレージの有無を確認
+        if (isNotExists()) {
+            Toast.makeText(this, "外部ストレージは存在しません", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        // 外部ストレージの状態を確認
+        if (isNotWrite()) {
+            Toast.makeText(this, "外部ストレージは書き込みできません", Toast.LENGTH_SHORT).show();
+            return;
+        }
 
         // タイマー処理
         mTimer = new Timer(true);
@@ -272,7 +274,6 @@ public class LauncherActivity extends AppCompatActivity {
         if (mTimer == null) {
             return;
         }
-        Log.d("LauncherActivity", "stop put log");
         mTimer.cancel();
         fileName = null;
     }

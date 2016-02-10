@@ -60,4 +60,7 @@
     <string name="title_activity_log_list">LogListActivity</string>
     <string name="title_log_list">logs</string>
     <string name="title_log_detail">log Detail</string>
+
+    <string name="monitor_start_message">start put log for battery</string>
+    <string name="monitor_end_message">stop put log</string>
 </resources>

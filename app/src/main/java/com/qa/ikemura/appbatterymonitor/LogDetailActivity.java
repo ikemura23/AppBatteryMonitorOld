@@ -6,6 +6,7 @@ import java.io.File;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.NavUtils;
@@ -73,23 +74,27 @@ public class LogDetailActivity extends AppCompatActivity {
     }
 
     private void ShareLogFile() {
-
+        final String mFilePath = Environment.getExternalStorageDirectory().getAbsolutePath()
+                + File.separator;
         DummyContent.DummyItem item = (DummyContent.DummyItem) getIntent().getSerializableExtra(LogDetailFragment.ARG_ITEM_ID);
-        File file = getFileStreamPath(item.fileName);
-        Uri internal = Uri.fromFile(file);
+
+        File sendFile = new File(mFilePath + item.fileName);
+        Uri internal = Uri.fromFile(sendFile);
 
         // Intent shareIntent = new Intent();
         // shareIntent.setAction(Intent.ACTION_SEND);
-        // shareIntent.putExtra(Intent.EXTRA_STREAM, file.getAbsolutePath());
+        // shareIntent.putExtra(Intent.EXTRA_SUBJECT,
+        // getString(R.string.app_name) + " log file");
+        // shareIntent.putExtra(Intent.EXTRA_TEXT, item.fileName);
+        // shareIntent.putExtra(Intent.EXTRA_STREAM, internal);
         // shareIntent.setType("text/plain");
-        // startActivity(Intent.createChooser(shareIntent, "ログファイル"));
+        // startActivity(shareIntent);
 
         // IntentBuilder をインスタンス化
         ShareCompat.IntentBuilder builder = ShareCompat.IntentBuilder.from(this);
         builder.setChooserTitle("Choose Send App");
         builder.setStream(internal);
-
-        builder.setType("application/log");
+        builder.setType("text/plain");
         builder.startChooser();
     }
 
