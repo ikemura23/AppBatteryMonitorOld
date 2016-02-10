@@ -9,8 +9,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import android.app.Activity;
-import android.content.Context;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.v4.app.ListFragment;
 import android.util.Log;
 import android.view.View;
@@ -31,6 +31,7 @@ import com.qa.ikemura.appbatterymonitor.dummy.DummyContent;
  */
 public class LogListFragment extends ListFragment {
 
+    final File file = Environment.getExternalStorageDirectory();
     ArrayList<DummyContent.DummyItem> contents = new ArrayList<>();
     /**
      * The serialization (saved instance state) Bundle key representing the
@@ -83,10 +84,8 @@ public class LogListFragment extends ListFragment {
         super.onCreate(savedInstanceState);
 
         try {
-            File path = getActivity().getApplicationContext().getFilesDir();
-            Log.d("LogListFragment", path.getAbsolutePath());
-            Log.d("LogListFragment", path.getAbsolutePath());
-            String fileList[] = path.list(new FilenameFilter() {
+
+            String fileNameList[] = file.list(new FilenameFilter() {
                 @Override
                 public boolean accept(File dir, String filename) {
                     if (filename.contains(".log")) {
@@ -97,12 +96,12 @@ public class LogListFragment extends ListFragment {
             });
 
             int no = 1;
-            for (String file : fileList) {
+            for (String fileName : fileNameList) {
                 DummyContent.DummyItem item = new DummyContent.DummyItem();
                 item.id = String.valueOf(no);
-                item.content = file;
-                item.details = getDetail(file);
-                Log.d("LogListFragment", item.id + " " + item.content);
+                item.fileName = fileName;
+                item.details = getDetail(fileName);
+                Log.d("LogListFragment", item.id + " " + item.fileName);
                 no++;
 
                 contents.add(item);
@@ -110,6 +109,7 @@ public class LogListFragment extends ListFragment {
 
         } catch (Exception e) {
             Toast.makeText(getActivity().getApplicationContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
+            Log.d("LogListFragment", "onCreate:" + e.getMessage());
         }
 
         setListAdapter(new ArrayAdapter<DummyContent.DummyItem>(
@@ -124,18 +124,18 @@ public class LogListFragment extends ListFragment {
     }
 
     private String readFileAsString(String fileName) {
-        Context context = getActivity().getApplicationContext();
         StringBuilder stringBuilder = new StringBuilder();
         String line;
         BufferedReader in = null;
 
         try {
-            in = new BufferedReader(new FileReader(new File(context.getFilesDir(), fileName)));
+            in = new BufferedReader(new FileReader(new File(file, fileName)));
             while ((line = in.readLine()) != null)
                 stringBuilder.append(line);
 
         } catch (IOException e) {
-            Log.e("LogListFragment", e.getMessage());
+            Toast.makeText(getActivity().getApplicationContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
+            Log.e("LogListFragment", "readFileAsString:" + e.getMessage());
         }
 
         return stringBuilder.toString();

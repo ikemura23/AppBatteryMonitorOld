@@ -1,6 +1,6 @@
 <TextView xmlns:android="http://schemas.android.com/apk/res/android"
           android:id="@+id/log_detail"
-          style="?android:attr/textAppearanceLarge"
+          style="?android:attr/textAppearanceSmall"
           xmlns:tools="http://schemas.android.com/tools"
           android:layout_width="match_parent"
           android:layout_height="match_parent"

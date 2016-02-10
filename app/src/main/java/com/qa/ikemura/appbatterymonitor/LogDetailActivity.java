@@ -75,7 +75,7 @@ public class LogDetailActivity extends AppCompatActivity {
     private void ShareLogFile() {
 
         DummyContent.DummyItem item = (DummyContent.DummyItem) getIntent().getSerializableExtra(LogDetailFragment.ARG_ITEM_ID);
-        File file = getFileStreamPath(item.content);
+        File file = getFileStreamPath(item.fileName);
         Uri internal = Uri.fromFile(file);
 
         // Intent shareIntent = new Intent();
@@ -88,10 +88,7 @@ public class LogDetailActivity extends AppCompatActivity {
         ShareCompat.IntentBuilder builder = ShareCompat.IntentBuilder.from(this);
         builder.setChooserTitle("Choose Send App");
         builder.setStream(internal);
-        // String[] toList = new String[]{address.getText().toString()};
-        // builder.setEmailTo(toList);
-        // builder.setSubject(item.content);
-        // builder.setText(item.details);
+
         builder.setType("application/log");
         builder.startChooser();
     }

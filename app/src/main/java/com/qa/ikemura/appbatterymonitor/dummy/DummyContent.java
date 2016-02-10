@@ -7,12 +7,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Helper class for providing sample content for user interfaces created by
- * Android template wizards.
- * <p/>
- * TODO: Replace all uses of this class before publishing your app.
- */
 public class DummyContent {
 
     /**
@@ -52,17 +46,14 @@ public class DummyContent {
         return builder.toString();
     }
 
-    /**
-     * A dummy item representing a piece of content.
-     */
     public static class DummyItem implements Serializable {
         public String id;
-        public String content;
+        public String fileName;
         public String details;
 
-        public DummyItem(String id, String content, String details) {
+        public DummyItem(String id, String fileName, String details) {
             this.id = id;
-            this.content = content;
+            this.fileName = fileName;
             this.details = details;
         }
 
@@ -72,7 +63,7 @@ public class DummyContent {
 
         @Override
         public String toString() {
-            return content;
+            return fileName;
         }
     }
 }
