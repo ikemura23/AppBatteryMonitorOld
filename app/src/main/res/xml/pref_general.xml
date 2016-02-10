@@ -32,9 +32,9 @@
     <EditTextPreference
         android:defaultValue="15"
         android:inputType="number"
-        android:key="delay"
+        android:key="interval_key"
         android:maxLines="1"
         android:selectAllOnFocus="true"
         android:singleLine="true"
-        android:title="delay (minutes)"/>
+        android:title="interval (minutes)"/>
 </PreferenceScreen>

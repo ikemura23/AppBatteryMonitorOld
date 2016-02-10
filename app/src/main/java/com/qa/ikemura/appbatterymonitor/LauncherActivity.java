@@ -25,6 +25,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 public class LauncherActivity extends AppCompatActivity {
@@ -74,8 +75,7 @@ public class LauncherActivity extends AppCompatActivity {
 
                 if (isRecord) {
                     startMonitor();
-                }
-                else {
+                } else {
                     stopMonitor();
                 }
 
@@ -94,6 +94,12 @@ public class LauncherActivity extends AppCompatActivity {
                 startLogListActivity();
             }
         });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        ((TextView) findViewById(R.id.activity_main_interval_text)).append(getInterval());
     }
 
     @Override
@@ -177,10 +183,10 @@ public class LauncherActivity extends AppCompatActivity {
             Toast.makeText(this, "外部ストレージは書き込みできません", Toast.LENGTH_SHORT).show();
             return;
         }
-        String delayString = getDelay();
-        int delay = 15;
+        String intervalString = getInterval();
+        int interval = 15;
         try {
-            delay = Integer.valueOf(delayString);
+            interval = Integer.valueOf(intervalString);
         } catch (Exception e) {
             Log.d("LauncherActivity", e.getMessage());
         }
@@ -198,7 +204,7 @@ public class LauncherActivity extends AppCompatActivity {
                         String batteryLevel = getBatteryLevel();
                         String value = strRecordTime + batteryLevel;
 
-                        Log.d("LauncherActivity", FILENAME);
+                        // Log.d("LauncherActivity", FILENAME);
                         Log.d("LauncherActivity", value);
                         try {
                             BufferedWriter bw = new BufferedWriter(new FileWriter(FILENAME, true));
@@ -211,13 +217,13 @@ public class LauncherActivity extends AppCompatActivity {
                     }
                 });
             }
-        }, 0, 1000 * 60 * delay); // 0秒後から設定>delayで設定した間隔で実行
+        }, 0, 1000 * 60 * interval); // 0秒後から, 設定 > intervalで設定した間隔で実行
     }
 
-    private String getDelay() {
+    private String getInterval() {
         return PreferenceManager
                 .getDefaultSharedPreferences(getApplicationContext())
-                .getString("delay", "15");
+                .getString(Const.interval_key, "15");
     }
 
     private String getRecordTime() {

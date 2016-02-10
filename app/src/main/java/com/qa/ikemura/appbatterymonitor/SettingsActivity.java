@@ -118,7 +118,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             super.onCreate(savedInstanceState);
             addPreferencesFromResource(R.xml.pref_general);
 
-            bindPreferenceSummaryToValue(findPreference("delay"));
+            bindPreferenceSummaryToValue(findPreference(Const.interval_key));
         }
 
     }
