@@ -54,12 +54,14 @@ public class LauncherActivity extends AppCompatActivity {
         }
     };
 
+    AppBatteryMonitorService appBatteryMonitorService;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_launcher);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        appBatteryMonitorService = new AppBatteryMonitorService();
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -74,9 +76,12 @@ public class LauncherActivity extends AppCompatActivity {
                 setEnableOrDisableForButton();
 
                 if (isRecord) {
-                    startMonitor();
+                    // サンプルのサービス常駐を開始
+                    appBatteryMonitorService.startResident(getApplicationContext());
+                    // startMonitor();
                 } else {
-                    stopMonitor();
+                    appBatteryMonitorService.stopResidentIfActive(getApplicationContext());
+                    // stopMonitor();
                 }
 
             }
@@ -106,14 +111,6 @@ public class LauncherActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        try {
-            if (myReceiver != null) {
-                unregisterReceiver(myReceiver);
-                myReceiver = null;
-            }
-        } catch (Exception e) {
-            Log.d("LauncherActivity", e.getMessage());
-        }
     }
 
     private void setEnableOrDisableForButton() {
@@ -231,7 +228,7 @@ public class LauncherActivity extends AppCompatActivity {
     private String getInterval() {
         return PreferenceManager
                 .getDefaultSharedPreferences(getApplicationContext())
-                .getString(Const.interval_key, "15");
+                .getString(Const.INTERVAL_KEY, "15");
     }
 
     private String getRecordTime() {

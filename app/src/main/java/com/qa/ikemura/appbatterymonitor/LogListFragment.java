@@ -104,13 +104,13 @@ public class LogListFragment extends ListFragment {
                 item.id = String.valueOf(no);
                 item.fileName = fileNameList[i];
                 item.details = readFileAsString(fileNameList[i]);
-                Log.d("LogListFragment", item.id + " " + item.fileName);
+                // Log.d(Const.TAG, item.id + " " + item.fileName);
                 contents.add(item);
             }
 
         } catch (Exception e) {
             Toast.makeText(getActivity().getApplicationContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
-            Log.d("LogListFragment", "onCreate:" + e.getMessage());
+            Log.d(Const.TAG, "onCreate:" + e.getMessage());
         }
 
         setListAdapter(new ArrayAdapter<DummyContent.DummyItem>(
@@ -132,7 +132,7 @@ public class LogListFragment extends ListFragment {
 
         } catch (IOException e) {
             Toast.makeText(getActivity().getApplicationContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
-            Log.e("LogListFragment", "readFileAsString:" + e.getMessage());
+            Log.e(Const.TAG, "BufferedReader.readLine:" + e.getMessage());
         }
 
         return stringBuilder.toString();

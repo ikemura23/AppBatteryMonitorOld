@@ -36,6 +36,8 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".LogListActivity" />
         </activity>
+
+        <service android:name="AppBatteryMonitorService"/>
     </application>
 
 </manifest>
