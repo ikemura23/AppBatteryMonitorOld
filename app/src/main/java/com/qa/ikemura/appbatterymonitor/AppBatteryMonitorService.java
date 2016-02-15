@@ -98,7 +98,7 @@ public class AppBatteryMonitorService extends BasePeriodicService {
             return fileName;
         }
         Date now = new Date();
-        SimpleDateFormat f = new SimpleDateFormat("yyyyMMdd HH:mm:ss", Locale.getDefault());
+        SimpleDateFormat f = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault());
         fileName = f.format(now) + ".log";
         return fileName;
     }
