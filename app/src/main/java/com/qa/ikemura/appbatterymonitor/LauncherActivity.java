@@ -89,10 +89,10 @@ public class LauncherActivity extends AppCompatActivity {
     private void setEnableOrDisableForButton() {
         if (isRecord) {
             findViewById(R.id.activity_main_setting_button).setEnabled(false);
-            findViewById(R.id.activity_main_log_button).setEnabled(false);
+            // findViewById(R.id.activity_main_log_button).setEnabled(false);
         } else {
             findViewById(R.id.activity_main_setting_button).setEnabled(true);
-            findViewById(R.id.activity_main_log_button).setEnabled(true);
+            // findViewById(R.id.activity_main_log_button).setEnabled(true);
         }
     }
 

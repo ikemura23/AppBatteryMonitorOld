@@ -90,21 +90,21 @@ public abstract class BasePeriodicService extends Service {
         // 次回登録
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             am.setExactAndAllowWhileIdle(
-                    AlarmManager.RTC,
+                    AlarmManager.RTC_WAKEUP,
                     now + getIntervalMS(),
                     alarmSender
                     );
         }
         else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             am.setExact(
-                    AlarmManager.RTC,
+                    AlarmManager.RTC_WAKEUP,
                     now + getIntervalMS(),
                     alarmSender
                     );
         }
         else {
             am.set(
-                    AlarmManager.RTC,
+                    AlarmManager.RTC_WAKEUP,
                     now + getIntervalMS(),
                     alarmSender
                     );
